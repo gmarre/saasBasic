@@ -118,9 +118,10 @@ entity Employee {=psl
   id                        Int             @id @default(autoincrement())
   user                      User            @relation(fields: [userId], references: [id])
   userId                    Int
-  name                      String          @default("")
+  firstname                      String          @default("")
   surname                   String          @default("")
   companyEmployeeId         String          @default("")
+  company                   String          @default("")
 psl=}
 
 entity GptResponse {=psl
@@ -381,6 +382,11 @@ query getGptResponses {
 query getAllTasksByUser {
   fn: import { getAllTasksByUser } from "@src/server/queries.js",
   entities: [Task]
+}
+
+query getAllProducers {
+  fn: import { getAllProducers } from "@src/server/queries.js",
+  entities: [Producer]
 }
 
 query getAllFilesByUser {

@@ -32,6 +32,23 @@ export const getGptResponses: GetGptResponses<void, GptResponse[]> = async (args
   });
 };
 
+export const getAllProducers: GetAllTasksByUser<void, Task[]> = async (_args, context) => {
+  if (!context.user) {
+    throw new HttpError(401);
+  }
+  return context.entities.Producer.findMany({
+    select: {
+      firstname: true,
+      profilePicture: true,
+      shopname:true,
+      id: true, // Incluez également l'ID si nécessaire
+    },
+    orderBy: {
+      createdAt: 'desc',
+    },
+  });
+};
+
 export const getAllTasksByUser: GetAllTasksByUser<void, Task[]> = async (_args, context) => {
   if (!context.user) {
     throw new HttpError(401);
