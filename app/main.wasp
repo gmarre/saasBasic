@@ -120,7 +120,7 @@ entity Employee {=psl
   userId                    Int
   firstname                      String          @default("")
   surname                   String          @default("")
-  companyEmployeeId         String          @default("")
+  companyEmployeeId         Int
   company                   String          @default("")
 psl=}
 
@@ -370,10 +370,13 @@ action createFile {
   fn: import { createFile } from "@src/server/actions.js",
   entities: [User, File]
 }
-
-action deleteAllProducers {
-  fn: import { deleteAllProducers } from "@src/server/actions.js",
+action deleteProducer {
+  fn: import { deleteProducer } from "@src/server/actions.js",
   entities: [Producer]
+}
+action deleteEmployee {
+  fn: import { deleteEmployee } from "@src/server/actions.js",
+  entities: [Employee]
 }
 
 

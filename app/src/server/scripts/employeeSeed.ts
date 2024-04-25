@@ -2,7 +2,7 @@ import {type Employee } from 'wasp/entities';
 import { faker } from '@faker-js/faker';
 import type { PrismaClient } from '@prisma/client';
 
-// in a terminal window run `wasp db seed` to seed your dev database with mock producer data
+// in a terminal window run `wasp db seed` to seed your dev database with mock employee data
 export function createRandomEmployee(userId: number): Omit<Employee, 'id'> {
   const employee: Omit<Employee, 'id'> = {
     firstname: faker.person.firstName(),
@@ -11,10 +11,10 @@ export function createRandomEmployee(userId: number): Omit<Employee, 'id'> {
     company:faker.company.name(),
     userId:userId,
   };
-  return producer;
+  return employee;
 }
 
-const EMPLOYEES_COUNT = 50; // Nombre de producteurs à créer
+const EMPLOYEES_COUNT = 50; // Nombre d'employees à créer
 
 export async function devSeedEmployee(prismaClient: PrismaClient) {
   try {
@@ -30,7 +30,7 @@ export async function devSeedEmployee(prismaClient: PrismaClient) {
     for (let i = 0; i < EMPLOYEES_COUNT; i++) {
       const randomIndex = Math.floor(Math.random() * users.length);
       const randomUser = users[randomIndex];
-      const employeeData = createRandomProducer(randomUser.id);
+      const employeeData = createRandomEmployee(randomUser.id);
       
       await prismaClient.employee.create({
         data: employeeData,

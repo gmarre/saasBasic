@@ -1,4 +1,4 @@
-import { type DailyStats, type GptResponse, type User, type PageViewSource, type Task, type File } from 'wasp/entities';
+import { type DailyStats, type GptResponse, type User, type PageViewSource, type Task, type File, Producer } from 'wasp/entities';
 import { HttpError } from 'wasp/server';
 import {
   type GetGptResponses,
@@ -7,6 +7,7 @@ import {
   type GetAllTasksByUser,
   type GetAllFilesByUser,
   type GetDownloadFileSignedURL,
+  type GetAllProducers
 } from 'wasp/server/operations';
 import { getDownloadFileSignedURLFromS3 } from './file-upload/s3Utils.js';
 
@@ -32,21 +33,11 @@ export const getGptResponses: GetGptResponses<void, GptResponse[]> = async (args
   });
 };
 
-export const getAllProducers: GetAllTasksByUser<void, Task[]> = async (_args, context) => {
+export const getAllProducers: GetAllProducers<void, Producer[]> = async (_args, context) => {
   if (!context.user) {
     throw new HttpError(401);
   }
-  return context.entities.Producer.findMany({
-    select: {
-      firstname: true,
-      profilePicture: true,
-      shopname:true,
-      id: true, // Incluez également l'ID si nécessaire
-    },
-    orderBy: {
-      createdAt: 'desc',
-    },
-  });
+  return context.entities.Producer.findMany();
 };
 
 export const getAllTasksByUser: GetAllTasksByUser<void, Task[]> = async (_args, context) => {

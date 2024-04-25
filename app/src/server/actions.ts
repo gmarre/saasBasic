@@ -1,4 +1,4 @@
-import { type User, type Task, type File } from 'wasp/entities';
+import { type User, type Task, type File, type Producer, type Employee } from 'wasp/entities';
 import { HttpError } from 'wasp/server';
 import {
   type GenerateGptResponse,
@@ -9,8 +9,8 @@ import {
   type DeleteTask,
   type UpdateTask,
   type CreateFile,
-  type DeleteAllProducers,
-  type DeleteAllEmployees,
+  type DeleteProducer,
+  type DeleteEmployee,
 } from 'wasp/server/operations';
 import Stripe from 'stripe';
 import type { GeneratedSchedule, StripePaymentResult } from '../shared/types';
@@ -342,22 +342,30 @@ export const updateCurrentUser: UpdateCurrentUser<Partial<User>, User> = async (
   });
 };
 
-export const deleteAllProducers: DeleteAllProducers<void,void> = async (context) => {
+export const deleteProducer: DeleteProducer<Pick<Producer, 'id'>, Producer> = async ({ id }, context) => {
   if (!context.user) {
     throw new HttpError(401);
   }
 
-  const task = await context.entities.Producer.deleteMany();
+  const producer = await context.entities.Producer.delete({
+    where: {
+      id,
+    },
+  });
 
-  return;
+  return producer;
 };
 
-export const deleteAllEmployees: DeleteAllEmployees<void,void> = async (context) => {
+export const deleteEmployee: DeleteEmployee<Pick<Employee, 'id'>, Employee> = async ({ id }, context) => {
   if (!context.user) {
     throw new HttpError(401);
   }
 
-  const task = await context.entities.Employee.deleteMany();
+  const employee = await context.entities.Employee.delete({
+    where: {
+      id,
+    },
+  });
 
-  return;
+  return employee;
 };
