@@ -9,6 +9,8 @@ import {
   type DeleteTask,
   type UpdateTask,
   type CreateFile,
+  type DeleteAllProducers,
+  type DeleteAllEmployees,
 } from 'wasp/server/operations';
 import Stripe from 'stripe';
 import type { GeneratedSchedule, StripePaymentResult } from '../shared/types';
@@ -338,4 +340,24 @@ export const updateCurrentUser: UpdateCurrentUser<Partial<User>, User> = async (
     },
     data: user,
   });
+};
+
+export const deleteAllProducers: DeleteAllProducers<void,void> = async (context) => {
+  if (!context.user) {
+    throw new HttpError(401);
+  }
+
+  const task = await context.entities.Producer.deleteMany();
+
+  return;
+};
+
+export const deleteAllEmployees: DeleteAllEmployees<void,void> = async (context) => {
+  if (!context.user) {
+    throw new HttpError(401);
+  }
+
+  const task = await context.entities.Employee.deleteMany();
+
+  return;
 };

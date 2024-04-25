@@ -371,6 +371,11 @@ action createFile {
   entities: [User, File]
 }
 
+action deleteAllProducers {
+  fn: import { deleteAllProducers } from "@src/server/actions.js",
+  entities: [Producer]
+}
+
 
 // 📚 Queries
 
