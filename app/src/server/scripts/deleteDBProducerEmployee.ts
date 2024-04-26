@@ -13,12 +13,12 @@ export async function deleteAllEmployeesAndProducers(prismaClient: PrismaClient)
 
     // Delete all employees using the DeleteEmployee function
     for (const employee of employees) {
-      await DeleteEmployee({ id: employee.id }, { user: { id: 1 } }); // Assuming a valid user ID for authorization
+      await DeleteEmployee({ id: employee.id }, { user: employee.user }); // Assuming a valid user ID for authorization
     }
 
     // Delete all producers using the DeleteProducer function
     for (const producer of producers) {
-      await DeleteProducer({ id: producer.id }, { user: { id: 1 } }); // Assuming a valid user ID for authorization
+      await DeleteProducer({ id: producer.id }, { user: producer.user }); // Assuming a valid user ID for authorization
     }
 
     console.log(`Employees and Producers successfully deleted.`);
