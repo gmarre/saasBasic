@@ -7,7 +7,7 @@ import { useQuery, getAllProducers} from 'wasp/client/operations';
 
 function LocalProducersMap() {
 
-  const { data: producers, isLoading: isProducersLoading } = useQuery('allProducers', getAllProducers);
+  const { data: producers, isLoading: isProducersLoading } = useQuery(getAllProducers);
 
   return (
     <div className='py-10 lg:mt-10'>
@@ -32,11 +32,11 @@ function LocalProducersMap() {
               {producers.map((producer) => (
                 <li key={producer.id}>
                   <div>
-                    <img src={producer.profilePicture} alt="Photo de profil" />
+                    <img src={producer.profilPicture} alt="Photo de profil" />
                   </div>
                   <div>
-                    <p>Prénom: {producer.firstName}</p>
-                    <p>Âge: {producer.age}</p>
+                    <p>Prénom: {producer.firstname}</p>
+                    <p>Âge: {producer.description}</p>
                   </div>
                 </li>
               ))}
