@@ -1,13 +1,24 @@
 import { BiLogIn } from 'react-icons/bi';
 import { type User } from 'wasp/entities';
 import { useAuth } from 'wasp/client/auth'; // Importez useAuth pour récupérer les informations sur l'utilisateur
+"use client";
+import {
+  APIProvider,
+  Map,
+  useMap,
+  AdvancedMarker,
+} from "@vis.gl/react-google-maps";
 
 
+import {MarkerClusterer} from "@googlemaps/markerclusterer"
+import type { Marker } from '@googlemaps/markerclusterer';
+import { useEffect, useState, useRef } from 'react';
 import { useQuery, getAllProducers} from 'wasp/client/operations';
 
 function LocalProducersMap() {
 
   const { data: producers, isLoading: isProducersLoading } = useQuery(getAllProducers);
+  const position = {lat : 53.54, lng:10}; 
 
   return (
     <div className='py-10 lg:mt-10'>
@@ -28,15 +39,15 @@ function LocalProducersMap() {
           <h2>Liste des producteurs</h2>
           {isProducersLoading && <div>Loading...</div>}
           {producers && producers.length > 0 && (
-            <ul>
+            <ul style={{ display: 'flex', listStyle: 'none', overflowX: 'auto' }}>
               {producers.map((producer) => (
                 <li key={producer.id}>
                   <div>
-                    <img src={producer.profilPicture} alt="Photo de profil" />
+                    <img src={producer.profilPicture} alt="Photo de profil" style={{ width: '100px', height: '100px' }} />
                   </div>
                   <div>
                     <p>Prénom: {producer.firstname}</p>
-                    <p>Âge: {producer.description}</p>
+                    <p>ShopName: {producer.shopname}</p>
                   </div>
                 </li>
               ))}
@@ -45,9 +56,21 @@ function LocalProducersMap() {
         </div>
       </div>
       {/* end Display of Producers Picture */}
+      {/* begin Display of Google Maps {process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY} */}
+      <div className='my-8 border rounded-3xl border-gray-900/10 dark:border-gray-100/10'>
+        <div className='sm:w-[90%] md:w-[70%] lg:w-[50%] py-10 px-6 mx-auto my-8 space-y-10'>
+          <h2>Maps des producteurs</h2>
+          <APIProvider apiKey='AIzaSyAUXN0p7b9wdErsBaVik7ZJVOkzg6yoQ9o'></APIProvider>
+          <div style={{height : "50vh", width: "50%"}}>
+            <Map zoom={4} center= {position}></Map>
+          </div>
+        </div>
+      </div>
+      {/* end Display of Google Maps */}
     </div>
   </div>
   );
 }
   
 export default LocalProducersMap;
+
