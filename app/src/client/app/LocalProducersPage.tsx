@@ -5,8 +5,9 @@ import { useAuth } from 'wasp/client/auth'; // Importez useAuth pour récupérer
 import {
   APIProvider,
   Map,
-  useMap,
   AdvancedMarker,
+  InfoWindow,
+  useAdvancedMarkerRef,
 } from "@vis.gl/react-google-maps";
 
 
@@ -18,7 +19,14 @@ import { useQuery, getAllProducers} from 'wasp/client/operations';
 function LocalProducersMap() {
 
   const { data: producers, isLoading: isProducersLoading } = useQuery(getAllProducers);
-  const position = {lat : 53.54, lng:10}; 
+  const [infowindowOpen, setInfowindowOpen] = useState(false);
+  const [selectedMarker, setSelectedMarker] = useState(null);
+  const [markerRef, marker] = useAdvancedMarkerRef();
+
+  const handleMarkerClick = (marker) => {
+    setSelectedMarker(marker);
+    setInfowindowOpen(true);
+  };
 
   return (
     <div className='py-10 lg:mt-10'>
@@ -59,16 +67,40 @@ function LocalProducersMap() {
       {/* begin Display of Google Maps {process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY} */}
       <div className='my-8 border rounded-3xl border-gray-900/10 dark:border-gray-100/10'>
         <div className='sm:w-[90%] md:w-[70%] lg:w-[50%] py-10 px-6 mx-auto my-8 space-y-10'>
-          <h2>Maps des producteurs</h2>
+          <h2>Google Maps des producteurs</h2>
           <APIProvider apiKey='AIzaSyAUXN0p7b9wdErsBaVik7ZJVOkzg6yoQ9o'>
-          
-            <Map
-              defaultZoom={3}
-              defaultCenter={{lat: 22.54992, lng: 0}}
-              gestureHandling={'greedy'}
-              disableDefaultUI={true}
-            /> 
-          
+            <div style={{height: "50vh", width : "100%"}}>
+
+              <Map
+                  defaultZoom={7}
+                  defaultCenter={{lat: 43.604261, lng: 1.443425}}
+                  gestureHandling={'greedy'}
+                  disableDefaultUI={true}
+                  mapId={'c3348dcf5b0ca956'}
+                >
+                  {producers && producers.map(producer => (
+                    <AdvancedMarker
+                      key={producer.id}
+                      position={{ lat: producer.lat, lng: producer.lgt }}
+                      title={producer.shopname}
+                      onClick={() => handleMarkerClick(marker)}
+                      ref={markerRef}
+                    />
+                  ))}
+                  {infowindowOpen && selectedMarker && (
+                    <InfoWindow
+                      anchor={markerRef.current}
+                      maxWidth={200}
+                      onCloseClick={() => setInfowindowOpen(false)}
+                    >
+                      <div>
+                        <h4>{selectedMarker.title}</h4>
+                        <p>This is an example for the combined with an Infowindow.</p>
+                      </div>
+                    </InfoWindow>
+                  )}
+              </Map> 
+            </div>
           </APIProvider>
         </div>
       </div>
@@ -79,4 +111,3 @@ function LocalProducersMap() {
 }
   
 export default LocalProducersMap;
-

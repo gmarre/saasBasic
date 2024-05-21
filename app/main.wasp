@@ -112,6 +112,8 @@ entity Producer {=psl
   description               String          @default("")
   shopname                  String          @default("")
   profilPicture             String          @default("")
+  lat                       Float           @default(43.604261)
+  lgt                       Float           @default(1.443425)
 psl=}
 
 entity Employee {=psl

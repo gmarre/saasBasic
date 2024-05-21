@@ -11,11 +11,13 @@ export function createRandomProducer(userId: number): Omit<Producer, 'id'> {
     userId:userId,
     description:faker.lorem.text(),
     shopname:faker.company.name(),
+    lat : faker.location.latitude({max :43.65, min : 43.5}),
+    lgt : faker.location.longitude({max :1.6 , min : 1.375 })
   };
   return producer;
 }
 
-const PRODUCERS_COUNT = 50; // Nombre de producteurs à créer
+const PRODUCERS_COUNT = 20; // Nombre de producteurs à créer
 
 export async function devSeedProducers(prismaClient: PrismaClient) {
   try {
