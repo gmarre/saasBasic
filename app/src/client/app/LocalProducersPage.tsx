@@ -9,10 +9,12 @@ import {
   useAdvancedMarkerRef,
 } from "@vis.gl/react-google-maps";
 
+import { Link } from 'react-router-dom';
+
 import { useEffect, useState, useRef } from 'react';
 import { useQuery, getAllProducers } from 'wasp/client/operations';
 
-function LocalProducersMap() {
+function LocalProducersPage() {
   const { data: producers, isLoading: isProducersLoading } = useQuery(getAllProducers);
   const [infowindowOpen, setInfowindowOpen] = useState(false);
   const [selectedMarker, setSelectedMarker] = useState<Producer | null>(null);
@@ -23,6 +25,8 @@ function LocalProducersMap() {
     setSelectedMarker(producer);
     setInfowindowOpen(true);
   };
+
+  const producerId = 3;
 
   return (
     <div className='py-10 lg:mt-10'>
@@ -55,7 +59,7 @@ function LocalProducersMap() {
                     </div>
                   </li>
                 ))}
-              </ul>
+              </ul>  
             )}
           </div>
         </div>
@@ -67,7 +71,7 @@ function LocalProducersMap() {
             <APIProvider apiKey='AIzaSyAUXN0p7b9wdErsBaVik7ZJVOkzg6yoQ9o'>
               <div style={{height: "50vh", width : "100%"}}>
                 <Map
-                  defaultZoom={7}
+                  defaultZoom={11}
                   defaultCenter={{lat: 43.604261, lng: 1.443425}}
                   gestureHandling={'greedy'}
                   disableDefaultUI={true}
@@ -88,11 +92,20 @@ function LocalProducersMap() {
                       maxWidth={200}
                       onCloseClick={() => setInfowindowOpen(false)}
                     >
-                      <div style={{ color: 'black', backgroundColor: 'white', padding: '10px' }}>
-                        <img src={selectedMarker.profilPicture} alt="Photo de profil" style={{ width: '100px', height: '100px', marginBottom: '10px' }} />
-                        <p>Prénom: {selectedMarker.firstname}</p>
-                        <p>ShopName: {selectedMarker.shopname}</p>
-                      </div>
+                    
+                      <Link to={`/local-producers-detail-page/${selectedMarker.id}`}>
+                        
+                        
+                          <div style={{ color: 'black', backgroundColor: 'white', padding: '10px' }}>
+                            Go to Producer Detail Page for Producer ID {producerId}
+                            <img src={selectedMarker.profilPicture} alt="Photo de profil" style={{ width: '100px', height: '100px', marginBottom: '0px', justifyContent:'center' }} />
+                            <p>Prénom: {selectedMarker.firstname}</p>
+                            <p>ShopName: {selectedMarker.shopname}</p>
+                          </div>
+                        
+                      </Link>
+                      
+                      
                     </InfoWindow>
                   )}
                 </Map> 
@@ -106,4 +119,4 @@ function LocalProducersMap() {
   );
 }
   
-export default LocalProducersMap;
+export default LocalProducersPage;

@@ -244,6 +244,12 @@ page LocalProducersPage {
   component: import LocalProducersPage from "@src/client/app/LocalProducersPage"
 }
 
+route LocalProducerDetailRoute { path: "/local-producers-detail-page/:producerId", to: LocalProducerDetailPage }
+page LocalProducerDetailPage {
+  authRequired: true,
+  component: import LocalProducerDetailPage from "@src/client/app/LocalProducerDetailPage"
+}
+
 route PricingPageRoute { path: "/pricing", to: PricingPage }
 page PricingPage {
   component: import PricingPage from "@src/client/app/PricingPage"
@@ -396,6 +402,11 @@ query getAllTasksByUser {
 
 query getAllProducers {
   fn: import { getAllProducers } from "@src/server/queries.js",
+  entities: [Producer]
+}
+
+query getProducerById {
+  fn: import { getProducerById } from "@src/server/queries.js",
   entities: [Producer]
 }
 

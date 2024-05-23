@@ -1,4 +1,4 @@
-import { type DailyStats, type GptResponse, type User, type PageViewSource, type Task, type File, Producer } from 'wasp/entities';
+import { type DailyStats, type GptResponse, type User, type PageViewSource, type Task, type File, type Producer } from 'wasp/entities';
 import { HttpError } from 'wasp/server';
 import {
   type GetGptResponses,
@@ -7,7 +7,8 @@ import {
   type GetAllTasksByUser,
   type GetAllFilesByUser,
   type GetDownloadFileSignedURL,
-  type GetAllProducers
+  type GetAllProducers,
+  type GetProducerById
 } from 'wasp/server/operations';
 import { getDownloadFileSignedURLFromS3 } from './file-upload/s3Utils.js';
 
@@ -39,6 +40,25 @@ export const getAllProducers: GetAllProducers<void, Producer[]> = async (_args, 
   }
   return context.entities.Producer.findMany();
 };
+
+export const getProducerById: GetProducerById<{ id: number }, Producer> = async ({ id }, context) => {
+  if (!context.user) {
+    throw new HttpError(401);
+  }
+
+  const producer = await context.entities.Producer.findUnique({
+    where: {
+      id: id,
+    },
+  });
+
+  if (!producer) {
+    throw new HttpError(404, 'Producer not found');
+  }
+
+  return producer;
+};
+
 
 export const getAllTasksByUser: GetAllTasksByUser<void, Task[]> = async (_args, context) => {
   if (!context.user) {
