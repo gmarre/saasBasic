@@ -12,7 +12,8 @@ export function createRandomProducer(userId: number): Omit<Producer, 'id'> {
     description:faker.lorem.text(),
     shopname:faker.company.name(),
     lat : faker.location.latitude({max :43.65, min : 43.5}),
-    lgt : faker.location.longitude({max :1.6 , min : 1.375 })
+    lgt : faker.location.longitude({max :1.6 , min : 1.375 }),
+    theme : faker.helpers.arrayElement(['eleveur', 'maraicher', 'mode', 'autres']),
   };
   return producer;
 }

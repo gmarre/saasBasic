@@ -114,13 +114,14 @@ entity Producer {=psl
   profilPicture             String          @default("")
   lat                       Float           @default(43.604261)
   lgt                       Float           @default(1.443425)
+  theme                     ProducerTheme    
 psl=}
 
 entity Employee {=psl
   id                        Int             @id @default(autoincrement())
   user                      User            @relation(fields: [userId], references: [id])
   userId                    Int
-  firstname                      String          @default("")
+  firstname                 String          @default("")
   surname                   String          @default("")
   companyEmployeeId         Int
   company                   String          @default("")
