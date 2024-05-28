@@ -114,7 +114,7 @@ entity Producer {=psl
   profilPicture             String          @default("")
   lat                       Float           @default(43.604261)
   lgt                       Float           @default(1.443425)
-  theme                     ProducerTheme    
+  theme                     ProducerTheme   @default(ProducerTheme.AUTRES) 
 psl=}
 
 entity Employee {=psl

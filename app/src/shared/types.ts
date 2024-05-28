@@ -5,7 +5,7 @@ export type StripePaymentResult = {
 
 export type SubscriptionStatusOptions = 'past_due' | 'canceled' | 'active' | 'deleted' | null;
 
-export type ProducerTheme = 'eleveur' | 'maraicher' | 'mode' | 'autres' | null; 
+export type ProducerTheme = 'ELEVEUR' | 'MARAICHER' | 'MODE' | 'AUTRES';
 
 export type Subtask = {
   description: string; // detailed breakdown and description of sub-task
