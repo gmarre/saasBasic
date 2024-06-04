@@ -4,13 +4,17 @@ import {
   type GetGptResponses,
   type GetDailyStats,
   type GetPaginatedUsers,
+  type GetPaginatedProducers,
   type GetAllTasksByUser,
   type GetAllFilesByUser,
   type GetDownloadFileSignedURL,
   type GetAllProducers,
-  type GetProducerById
+  type GetProducerById,
+  type GetFiveRandomProducers 
 } from 'wasp/server/operations';
 import { getDownloadFileSignedURLFromS3 } from './file-upload/s3Utils.js';
+import { ProducerTheme } from '../shared/types.js';
+import { MdTurnedIn } from 'react-icons/md';
 
 type DailyStatsWithSources = DailyStats & {
   sources: PageViewSource[];
@@ -190,5 +194,93 @@ export const getPaginatedUsers: GetPaginatedUsers<GetPaginatedUsersInput, GetPag
   return {
     users: queryResults,
     totalPages,
+  };
+};
+
+type GetPaginatedProducersInput = {
+  skip: number;
+  shopnameContains?: string;
+  themeFilter?: ProducerTheme;
+};
+
+type GetPaginatedProducersOutput = {
+  producers: Pick<
+    Producer,
+    'id' | 'firstname' | 'surname' | 'shopname' | 'description' | 'theme'
+  >[];
+  totalPages: number;
+};
+
+export const getPaginatedProducers: GetPaginatedProducers<GetPaginatedProducersInput, GetPaginatedProducersOutput> = async (
+  args,
+  context
+) => {
+  const queryResults = await context.entities.Producer.findMany({
+    skip: args.skip,
+    take: 10,
+    where: {
+      shopname: {
+        contains: args.shopnameContains || undefined,
+        mode: 'insensitive',
+      },
+      theme: args.themeFilter || undefined,
+    },
+    select: {
+      id: true,
+      firstname: true,
+      surname: true,
+      shopname: true,
+      description: true,
+      theme: true,
+    },
+    orderBy: {
+      id: 'desc',
+    },
+  });
+
+  const totalProducerCount = await context.entities.Producer.count({
+    where: {
+      shopname: {
+        contains: args.shopnameContains || undefined,
+        mode: 'insensitive',
+      },
+      theme: args.themeFilter || undefined,
+    },
+  });
+  const totalPages = Math.ceil(totalProducerCount / 10);
+
+  return {
+    producers: queryResults,
+    totalPages,
+  };
+};
+
+type GetRandomProducersOutput = {
+  producers: Pick<
+    Producer,
+    'id' | 'firstname' | 'surname' | 'shopname' | 'description' | 'profilPicture' |'theme'
+  >[];
+};
+
+export const getFiveRandomProducers: GetFiveRandomProducers<void, GetRandomProducersOutput> = async (_args: void, context) => {
+
+  const queryResults = await context.entities.Producer.findMany({
+    take: 5,
+    select: {
+      id: true,
+      firstname: true,
+      surname: true,
+      shopname: true,
+      description: true,
+      profilPicture : true,
+      theme: true,
+    },
+    orderBy: {
+      id: 'desc',
+    },
+  });
+
+  return {
+    producers: queryResults,
   };
 };

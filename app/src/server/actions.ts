@@ -5,11 +5,12 @@ import {
   type StripePayment,
   type UpdateCurrentUser,
   type UpdateUserById,
+  type UpdateProducer,
+  type DeleteProducer,
   type CreateTask,
   type DeleteTask,
   type UpdateTask,
   type CreateFile,
-  type DeleteProducer,
   type DeleteEmployee,
 } from 'wasp/server/operations';
 import Stripe from 'stripe';
@@ -368,4 +369,17 @@ export const deleteEmployee: DeleteEmployee<Pick<Employee, 'id'>, Employee> = as
   });
 
   return employee;
+};
+
+export const updateProducer: UpdateProducer<Partial<Producer>, Producer> = async (producerData: Partial<Producer>, context) => {
+  if (!context.user) {
+    throw new HttpError(401);
+  }
+
+  return context.entities.Producer.update({
+    where: {
+      id: context.user.id,
+    },
+    data: producerData,
+  });
 };

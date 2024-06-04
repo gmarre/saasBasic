@@ -388,6 +388,10 @@ action deleteEmployee {
   entities: [Employee]
 }
 
+action updateProducer {
+  fn: import { updateProducer } from "@src/server/actions.js",
+  entities: [Producer]
+}
 
 // 📚 Queries
 
@@ -431,6 +435,15 @@ query getPaginatedUsers {
   entities: [User]
 }
 
+query getPaginatedProducers {
+  fn: import { getPaginatedProducers } from "@src/server/queries.js",
+  entities: [Producer]
+}
+
+query getFiveRandomProducers {
+  fn: import { getFiveRandomProducers } from "@src/server/queries.js",
+  entities: [Producer]
+}
 /*
  * 📡 These are custom Wasp API Endpoints. Use them for callbacks, webhooks, etc.
  * https://wasp-lang.dev/docs/advanced/apis

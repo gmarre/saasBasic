@@ -1,13 +1,21 @@
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { cn } from '../../../shared/utils';
+import { updateProducer, deleteProducer } from 'wasp/client/operations';
+import { ProducerTheme } from 'wasp/ext-src/shared/types';
 
 const DropdownDefault = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [producerData, setProducerData] = useState({
+    firstname: '',
+    surname: '',
+    shopname: '',
+    theme: '',
+  });
 
   const trigger = useRef<any>(null);
   const dropdown = useRef<any>(null);
 
-  // close on click outside
   useEffect(() => {
     const clickHandler = ({ target }: MouseEvent) => {
       if (!dropdown.current) return;
@@ -18,7 +26,6 @@ const DropdownDefault = () => {
     return () => document.removeEventListener('click', clickHandler);
   });
 
-  // close if the esc key is pressed
   useEffect(() => {
     const keyHandler = ({ keyCode }: KeyboardEvent) => {
       if (!dropdownOpen || keyCode !== 27) return;
@@ -28,10 +35,34 @@ const DropdownDefault = () => {
     return () => document.removeEventListener('keydown', keyHandler);
   });
 
+  const handleEdit = async () => {
+    try {
+      // Convertir la chaîne de caractères de theme en ProducerTheme
+      const updatedProducerData = {
+        ...producerData,
+        theme: producerData.theme as ProducerTheme,
+      };
+      await updateProducer(updatedProducerData);
+      setIsEditing(false);
+      setDropdownOpen(false);
+    } catch (error) {
+      console.error('Error updating producer:', error);
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      await deleteProducer({ id: 1 }); // Remplacez 1 par l'ID réel du producteur à supprimer
+      setDropdownOpen(false);
+    } catch (error) {
+      console.error('Error deleting user:', error);
+    }
+  };
+  
   return (
     <div className='relative'>
       <button ref={trigger} onClick={() => setDropdownOpen(!dropdownOpen)}>
-        <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
+      <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
           <path
             d='M2.25 11.25C3.49264 11.25 4.5 10.2426 4.5 9C4.5 7.75736 3.49264 6.75 2.25 6.75C1.00736 6.75 0 7.75736 0 9C0 10.2426 1.00736 11.25 2.25 11.25Z'
             fill='#98A6AD'
@@ -58,7 +89,10 @@ const DropdownDefault = () => {
           }
         )}
       >
-        <button className='flex w-full items-center gap-2 rounded-sm py-1.5 px-4 text-left text-sm hover:bg-gray dark:hover:bg-meta-4'>
+        <button
+          className='flex w-full items-center gap-2 rounded-sm py-1.5 px-4 text-left text-sm hover:bg-gray dark:hover:bg-meta-4'
+          onClick={() => setIsEditing(true)}
+        >
           <svg
             className='fill-current'
             width='16'
@@ -81,7 +115,10 @@ const DropdownDefault = () => {
           </svg>
           Edit
         </button>
-        <button className='flex w-full items-center gap-2 rounded-sm py-1.5 px-4 text-left text-sm hover:bg-gray dark:hover:bg-meta-4'>
+        <button
+          className='flex w-full items-center gap-2 rounded-sm py-1.5 px-4 text-left text-sm hover:bg-gray dark:hover:bg-meta-4'
+          onClick={handleDelete}
+        >
           <svg
             className='fill-current'
             width='16'
@@ -110,6 +147,41 @@ const DropdownDefault = () => {
           Delete
         </button>
       </div>
+
+      {isEditing && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-4 rounded">
+            <h2>Edit Producer</h2>
+            <input
+              type="text"
+              placeholder="First Name"
+              value={producerData.firstname}
+              onChange={(e) => setProducerData({ ...producerData, firstname: e.target.value })}
+            />
+            <input
+              type="text"
+              placeholder="Surname"
+              value={producerData.surname}
+              onChange={(e) => setProducerData({ ...producerData, surname: e.target.value })}
+            />
+            <input
+              type="text"
+              placeholder="Shop Name"
+              value={producerData.shopname}
+              onChange={(e) => setProducerData({ ...producerData, shopname: e.target.value })}
+            />
+            <input
+              type="text"
+              placeholder="Theme"
+              value={producerData.theme}
+              onChange={(e) => setProducerData({ ...producerData, theme: e.target.value })}
+            />
+            <button onClick={handleEdit}>Save</button>
+            <button onClick={handleEdit}>Save</button>
+            <button onClick={() => setIsEditing(false)}>Cancel</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
