@@ -1,4 +1,4 @@
-import { type User, type Task, type File, type Producer, type Employee } from 'wasp/entities';
+import { type User, type Task, type File, type Producer} from 'wasp/entities';
 import { HttpError } from 'wasp/server';
 import {
   type GenerateGptResponse,
@@ -11,7 +11,6 @@ import {
   type DeleteTask,
   type UpdateTask,
   type CreateFile,
-  type DeleteEmployee,
 } from 'wasp/server/operations';
 import Stripe from 'stripe';
 import type { GeneratedSchedule, StripePaymentResult } from '../shared/types';
@@ -357,19 +356,6 @@ export const deleteProducer: DeleteProducer<Pick<Producer, 'id'>, Producer> = as
   return producer;
 };
 
-export const deleteEmployee: DeleteEmployee<Pick<Employee, 'id'>, Employee> = async ({ id }, context) => {
-  if (!context.user) {
-    throw new HttpError(401);
-  }
-
-  const employee = await context.entities.Employee.delete({
-    where: {
-      id,
-    },
-  });
-
-  return employee;
-};
 
 export const updateProducer: UpdateProducer<Partial<Producer>, Producer> = async (producerData: Partial<Producer>, context) => {
   if (!context.user) {

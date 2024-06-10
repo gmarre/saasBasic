@@ -99,14 +99,16 @@ entity User {=psl
   tasks                     Task[]
   files                     File[]
   age                       Int             @default(100)
-  employe                   Employee[]
-  producer                  Producer[]
+  isProducer                Boolean         @default(false)
+  producer                  Producer?       @relation(fields: [producerId], references: [id])
+  producerId                Int?            @unique
 psl=}
+
 
 entity Producer {=psl
   id                        Int             @id @default(autoincrement())
   user                      User            @relation(fields: [userId], references: [id])
-  userId                    Int
+  userId                    Int             @unique
   firstname                 String          @default("")
   surname                   String          @default("")
   description               String          @default("")
@@ -115,16 +117,6 @@ entity Producer {=psl
   lat                       Float           @default(43.604261)
   lgt                       Float           @default(1.443425)
   theme                     ProducerTheme   @default(ProducerTheme.AUTRES) 
-psl=}
-
-entity Employee {=psl
-  id                        Int             @id @default(autoincrement())
-  user                      User            @relation(fields: [userId], references: [id])
-  userId                    Int
-  firstname                 String          @default("")
-  surname                   String          @default("")
-  companyEmployeeId         Int
-  company                   String          @default("")
 psl=}
 
 entity GptResponse {=psl
